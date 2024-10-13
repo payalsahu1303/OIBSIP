@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +17,19 @@ public class LibraryManagementSystem {
         // Sample books
         books.put("B001", new Book("B001", "The Great Gatsby", "F. Scott Fitzgerald", true));
         books.put("B002", new Book("B002", "To Kill a Mockingbird", "Harper Lee", true));
-        books.put("B003", new Book("B003", "1984", "George Orwell", true));
+        books.put("B003", new Book("B003", "1984", "George Orwell", false));
+        books.put("B004", new Book("B004", "Pride and Prejudice", "Jane Austen", true));
+        books.put("B005", new Book("B005", "Moby Dick", "Herman Melville", false));
+        books.put("B006", new Book("B006", "War and Peace", "Leo Tolstoy", true));
+        books.put("B007", new Book("B007", "The Odyssey", "Homer", true));
+        books.put("B008", new Book("B008", "Ulysses", "James Joyce", false));
+        books.put("B009", new Book("B009", "The Catcher in the Rye", "J.D. Salinger", true));
+        books.put("B010", new Book("B010", "Crime and Punishment", "Fyodor Dostoevsky", false));
+        books.put("B011", new Book("B011", "The Brothers Karamazov", "Fyodor Dostoevsky", true));
+        books.put("B012", new Book("B012", "Brave New World", "Aldous Huxley", false));
+        books.put("B013", new Book("B013", "Anna Karenina", "Leo Tolstoy", true));
+        books.put("B014", new Book("B014", "The Divine Comedy", "Dante Alighieri", false));
+        books.put("B015", new Book("B015", "Don Quixote", "Miguel de Cervantes", true));
 
         // Set the custom green theme
         setGreenTheme();
@@ -32,25 +45,30 @@ public class LibraryManagementSystem {
         UIManager.put("Button.foreground", Color.WHITE); // White text on buttons
         UIManager.put("Button.font", new Font("Arial", Font.BOLD, 14));
         UIManager.put("TextField.border", new LineBorder(new Color(34, 139, 34), 2)); // Dark green border for text
-                                                                                      // fields
         UIManager.put("Label.font", new Font("Arial", Font.PLAIN, 14)); // Consistent label font
         UIManager.put("TextField.font", new Font("Arial", Font.PLAIN, 14)); // Consistent text field font
+        UIManager.put("Table.font", new Font("Arial", Font.PLAIN, 14)); // Table font
+        UIManager.put("Table.background", new Color(204, 255, 204)); // Light green table background
+        UIManager.put("Table.foreground", Color.BLACK); // Table text color
+        UIManager.put("Table.gridColor", new Color(102, 204, 102)); // Grid color matching theme
     }
 
     public static void createLoginWindow() {
         JFrame loginFrame = new JFrame("Login - Library Management System");
-        loginFrame.setSize(400, 200); // Fixed size
+        loginFrame.setSize(400, 250); // Adjusted size
         loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        loginFrame.setLayout(new GridLayout(3, 2, 10, 10)); // GridLayout with spacing
+        loginFrame.setLayout(new GridBagLayout());
 
-        // Center the window on the screen
-        loginFrame.setLocationRelativeTo(null);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
 
         JLabel userLabel = new JLabel("Login ID:");
-        JTextField userField = new JTextField();
+        JTextField userField = new JTextField(20);
 
         JLabel passLabel = new JLabel("Password:");
-        JPasswordField passField = new JPasswordField();
+        JPasswordField passField = new JPasswordField(20);
 
         JButton loginButton = new JButton("Login");
         JLabel messageLabel = new JLabel();
@@ -67,24 +85,41 @@ public class LibraryManagementSystem {
             }
         });
 
-        loginFrame.add(userLabel);
-        loginFrame.add(userField);
-        loginFrame.add(passLabel);
-        loginFrame.add(passField);
-        loginFrame.add(loginButton);
-        loginFrame.add(messageLabel);
+        // Add components to the frame
+        gbc.anchor = GridBagConstraints.EAST;
+        loginFrame.add(userLabel, gbc);
+
+        gbc.gridx++;
+        gbc.anchor = GridBagConstraints.WEST;
+        loginFrame.add(userField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.anchor = GridBagConstraints.EAST;
+        loginFrame.add(passLabel, gbc);
+
+        gbc.gridx++;
+        gbc.anchor = GridBagConstraints.WEST;
+        loginFrame.add(passField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        loginFrame.add(loginButton, gbc);
+
+        gbc.gridy++;
+        loginFrame.add(messageLabel, gbc);
+        loginFrame.setLocationRelativeTo(null); // Center the window on the screen
 
         loginFrame.setVisible(true);
     }
 
     public static void createMainMenu() {
         JFrame mainMenuFrame = new JFrame("Main Menu - Library Management System");
-        mainMenuFrame.setSize(400, 200); // Fixed size
+        mainMenuFrame.setSize(400, 300); // Adjusted size
         mainMenuFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainMenuFrame.setLayout(new GridLayout(3, 1, 10, 10)); // GridLayout with spacing
-
-        // Center the window on the screen
-        mainMenuFrame.setLocationRelativeTo(null);
+        mainMenuFrame.setLayout(new GridLayout(3, 1, 20, 20)); // More spacing for better visibility
 
         JButton adminModuleButton = new JButton("Admin Module");
         JButton userModuleButton = new JButton("User Module");
@@ -97,17 +132,15 @@ public class LibraryManagementSystem {
         mainMenuFrame.add(adminModuleButton);
         mainMenuFrame.add(userModuleButton);
         mainMenuFrame.add(exitButton);
+        mainMenuFrame.setLocationRelativeTo(null); // Center the window on the screen
 
         mainMenuFrame.setVisible(true);
     }
 
     public static void createAdminModule() {
         JFrame adminFrame = new JFrame("Admin Module");
-        adminFrame.setSize(400, 300); // Fixed size
-        adminFrame.setLayout(new GridLayout(4, 1, 10, 10)); // GridLayout with spacing
-
-        // Center the window on the screen
-        adminFrame.setLocationRelativeTo(null);
+        adminFrame.setSize(400, 300); // Adjusted size
+        adminFrame.setLayout(new GridLayout(4, 1, 20, 20));
 
         JButton addBookButton = new JButton("Add Book");
         JButton removeBookButton = new JButton("Remove Book");
@@ -123,103 +156,15 @@ public class LibraryManagementSystem {
         adminFrame.add(removeBookButton);
         adminFrame.add(viewBooksButton);
         adminFrame.add(exitButton);
+        adminFrame.setLocationRelativeTo(null); // Center the window on the screen
 
         adminFrame.setVisible(true);
     }
 
-    public static void addBook() {
-        JFrame addBookFrame = new JFrame("Add Book");
-        addBookFrame.setSize(400, 300); // Fixed size
-        addBookFrame.setLayout(new GridLayout(4, 2, 10, 10)); // GridLayout with spacing
-
-        // Center the window on the screen
-        addBookFrame.setLocationRelativeTo(null);
-
-        JLabel bookIdLabel = new JLabel("Book ID:");
-        JTextField bookIdField = new JTextField();
-
-        JLabel titleLabel = new JLabel("Book Title:");
-        JTextField titleField = new JTextField();
-
-        JLabel authorLabel = new JLabel("Author:");
-        JTextField authorField = new JTextField();
-
-        JButton submitButton = new JButton("Add Book");
-        JLabel messageLabel = new JLabel();
-
-        submitButton.addActionListener(e -> {
-            String bookId = bookIdField.getText();
-            String title = titleField.getText();
-            String author = authorField.getText();
-
-            books.put(bookId, new Book(bookId, title, author, true));
-            messageLabel.setText("Book added successfully!");
-        });
-
-        addBookFrame.add(bookIdLabel);
-        addBookFrame.add(bookIdField);
-        addBookFrame.add(titleLabel);
-        addBookFrame.add(titleField);
-        addBookFrame.add(authorLabel);
-        addBookFrame.add(authorField);
-        addBookFrame.add(submitButton);
-        addBookFrame.add(messageLabel);
-
-        addBookFrame.setVisible(true);
-    }
-
-    public static void removeBook() {
-        JFrame removeBookFrame = new JFrame("Remove Book");
-        removeBookFrame.setSize(400, 200); // Fixed size
-        removeBookFrame.setLayout(new GridLayout(2, 2, 10, 10)); // GridLayout with spacing
-
-        // Center the window on the screen
-        removeBookFrame.setLocationRelativeTo(null);
-
-        JLabel bookIdLabel = new JLabel("Book ID to Remove:");
-        JTextField bookIdField = new JTextField();
-        JButton removeButton = new JButton("Remove Book");
-        JLabel messageLabel = new JLabel();
-
-        removeButton.addActionListener(e -> {
-            String bookId = bookIdField.getText();
-            if (books.remove(bookId) != null) {
-                messageLabel.setText("Book removed successfully!");
-            } else {
-                messageLabel.setText("Book not found!");
-            }
-        });
-
-        removeBookFrame.add(bookIdLabel);
-        removeBookFrame.add(bookIdField);
-        removeBookFrame.add(removeButton);
-        removeBookFrame.add(messageLabel);
-
-        removeBookFrame.setVisible(true);
-    }
-
-    public static void viewBooks() {
-        JFrame viewBooksFrame = new JFrame("View Books");
-        viewBooksFrame.setSize(400, 300); // Fixed size
-        viewBooksFrame.setLayout(new GridLayout(books.size() + 1, 1, 10, 10)); // GridLayout with spacing
-
-        // Center the window on the screen
-        viewBooksFrame.setLocationRelativeTo(null);
-
-        for (Book book : books.values()) {
-            viewBooksFrame.add(new JLabel(book.toString()));
-        }
-
-        viewBooksFrame.setVisible(true);
-    }
-
     public static void createUserModule() {
         JFrame userFrame = new JFrame("User Module");
-        userFrame.setSize(400, 300); // Fixed size
-        userFrame.setLayout(new GridLayout(4, 1, 10, 10)); // GridLayout with spacing
-
-        // Center the window on the screen
-        userFrame.setLocationRelativeTo(null);
+        userFrame.setSize(400, 300); // Adjusted size
+        userFrame.setLayout(new GridLayout(4, 1, 20, 20));
 
         JButton viewBooksButton = new JButton("View Books");
         JButton issueBookButton = new JButton("Issue Book");
@@ -235,91 +180,111 @@ public class LibraryManagementSystem {
         userFrame.add(issueBookButton);
         userFrame.add(returnBookButton);
         userFrame.add(exitButton);
+        userFrame.setLocationRelativeTo(null); // Center the window on the screen
 
         userFrame.setVisible(true);
     }
 
+    public static void addBook() {
+        String id = JOptionPane.showInputDialog("Enter Book ID:");
+        String title = JOptionPane.showInputDialog("Enter Book Title:");
+        String author = JOptionPane.showInputDialog("Enter Author Name:");
+
+        if (id != null && title != null && author != null && !id.isEmpty() && !title.isEmpty() && !author.isEmpty()) {
+            books.put(id, new Book(id, title, author, true));
+            JOptionPane.showMessageDialog(null, "Book added successfully!");
+        } else {
+            JOptionPane.showMessageDialog(null, "All fields are required!");
+        }
+    }
+
+    public static void removeBook() {
+        String id = JOptionPane.showInputDialog("Enter Book ID to remove:");
+
+        if (id != null && books.containsKey(id)) {
+            books.remove(id);
+            JOptionPane.showMessageDialog(null, "Book removed successfully!");
+        } else {
+            JOptionPane.showMessageDialog(null, "Book ID not found!");
+        }
+    }
+
+    public static void viewBooks() {
+        JFrame bookFrame = new JFrame("Books in the Library");
+        bookFrame.setSize(600, 400); // Adjusted size for the table
+
+        String[] columnNames = { "Book ID", "Title", "Author", "Available" };
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+
+        // Add each book to the table model
+        for (Book book : books.values()) {
+            String[] row = { book.getId(), book.getTitle(), book.getAuthor(), book.isAvailable() ? "Yes" : "No" };
+            tableModel.addRow(row);
+        }
+
+        JTable bookTable = new JTable(tableModel);
+        JScrollPane scrollPane = new JScrollPane(bookTable);
+        bookFrame.add(scrollPane);
+        bookFrame.setLocationRelativeTo(null); // Center the window on the screen
+
+        bookFrame.setVisible(true);
+    }
+
     public static void issueBook() {
-        JFrame issueBookFrame = new JFrame("Issue Book");
-        issueBookFrame.setSize(400, 200); // Fixed size
-        issueBookFrame.setLayout(new GridLayout(2, 2, 10, 10)); // GridLayout with spacing
+        String id = JOptionPane.showInputDialog("Enter Book ID to issue:");
 
-        // Center the window on the screen
-        issueBookFrame.setLocationRelativeTo(null);
-
-        JLabel bookIdLabel = new JLabel("Book ID to Issue:");
-        JTextField bookIdField = new JTextField();
-        JButton issueButton = new JButton("Issue Book");
-        JLabel messageLabel = new JLabel();
-
-        issueButton.addActionListener(e -> {
-            String bookId = bookIdField.getText();
-            Book book = books.get(bookId);
-            if (book != null && book.isAvailable()) {
-                book.setAvailable(false);
-                issuedBooks.put(bookId, bookId);
-                messageLabel.setText("Book issued successfully!");
+        if (id != null && books.containsKey(id) && books.get(id).isAvailable()) {
+            String pnr = JOptionPane.showInputDialog("Enter your PNR:");
+            if (pnr != null && !pnr.isEmpty()) {
+                books.get(id).setAvailable(false);
+                issuedBooks.put(pnr, id);
+                JOptionPane.showMessageDialog(null, "Book issued successfully!");
             } else {
-                messageLabel.setText("Book not available for issue!");
+                JOptionPane.showMessageDialog(null, "PNR cannot be empty!");
             }
-        });
-
-        issueBookFrame.add(bookIdLabel);
-        issueBookFrame.add(bookIdField);
-        issueBookFrame.add(issueButton);
-        issueBookFrame.add(messageLabel);
-
-        issueBookFrame.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(null, "Book ID not found or not available!");
+        }
     }
 
     public static void returnBook() {
-        JFrame returnBookFrame = new JFrame("Return Book");
-        returnBookFrame.setSize(400, 200); // Fixed size
-        returnBookFrame.setLayout(new GridLayout(2, 2, 10, 10)); // GridLayout with spacing
+        String pnr = JOptionPane.showInputDialog("Enter your PNR to return the book:");
 
-        // Center the window on the screen
-        returnBookFrame.setLocationRelativeTo(null);
-
-        JLabel bookIdLabel = new JLabel("Book ID to Return:");
-        JTextField bookIdField = new JTextField();
-        JButton returnButton = new JButton("Return Book");
-        JLabel messageLabel = new JLabel();
-
-        returnButton.addActionListener(e -> {
-            String bookId = bookIdField.getText();
-            if (issuedBooks.containsKey(bookId)) {
-                Book book = books.get(bookId);
-                if (book != null) {
-                    book.setAvailable(true);
-                    issuedBooks.remove(bookId);
-                    messageLabel.setText("Book returned successfully!");
-                }
-            } else {
-                messageLabel.setText("This book was not issued!");
-            }
-        });
-
-        returnBookFrame.add(bookIdLabel);
-        returnBookFrame.add(bookIdField);
-        returnBookFrame.add(returnButton);
-        returnBookFrame.add(messageLabel);
-
-        returnBookFrame.setVisible(true);
+        if (pnr != null && issuedBooks.containsKey(pnr)) {
+            String bookId = issuedBooks.get(pnr);
+            books.get(bookId).setAvailable(true);
+            issuedBooks.remove(pnr);
+            JOptionPane.showMessageDialog(null, "Book returned successfully!");
+        } else {
+            JOptionPane.showMessageDialog(null, "Invalid PNR or no book issued!");
+        }
     }
 }
 
-// Book class remains the same
+// Book class for book details
 class Book {
-    String id;
-    String title;
-    String author;
-    boolean available;
+    private String id;
+    private String title;
+    private String author;
+    private boolean available;
 
     public Book(String id, String title, String author, boolean available) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.available = available;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
     }
 
     public boolean isAvailable() {
